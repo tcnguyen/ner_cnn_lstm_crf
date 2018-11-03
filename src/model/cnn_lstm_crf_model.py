@@ -169,11 +169,13 @@ class CharCNNLSTMCRFModel(BaseModel):
             b = tf.get_variable("b", shape=[self.features_generator.ntags],
                                 dtype=tf.float32, initializer=tf.zeros_initializer())
 
-            nsteps = tf.shape(output)[1]
+            max_seq_len = tf.shape(output)[1]
             output = tf.reshape(output, [-1, 2*Config.hidden_size_lstm])
-            pred = tf.matmul(output, W) + b
+            logits = tf.matmul(output, W) + b
+
+            # logits will be the uniry potentials to the CRF
             self.logits = tf.reshape(
-                pred, [-1, nsteps, self.features_generator.ntags])
+                logits, [-1, max_seq_len, self.features_generator.ntags])
 
     def add_loss_op(self):
         """Defines the loss"""
