@@ -4,7 +4,11 @@ import tensorflow as tf
 
 from src.model.utils import pad_sequences, pad_characters
 from src.model.base_model import BaseModel
+
 from src.data.features_generator import FeaturesGenerator
+
+from src.scripts import conlleval
+
 from src.config import Config
 
 Progbar = tf.keras.utils.Progbar
@@ -221,7 +225,7 @@ class CharCNNLSTMCRFModel(BaseModel):
 
         Returns:
             loss on development set
-            
+
         """
         # progbar stuff for logging
         batch_size = Config.batch_size
@@ -246,19 +250,33 @@ class CharCNNLSTMCRFModel(BaseModel):
         dev_losses = []
         for i, (features, labels) in enumerate(self.features_generator.minibatches(dev, batch_size)):
             fd, _ = self.get_feed_dict(features, labels, dropout=1.0)
-
             dev_loss = self.sess.run(self.loss, feed_dict=fd)
             dev_losses.append(dev_loss)
 
         self.logger.info("dev loss: %s", np.mean(dev_losses))
 
-        # metrics = self.run_evaluate(dev)
-        # msg = " - ".join(["{} {:04.2f}".format(k, v)
-        #                   for k, v in metrics.items()])
-        # self.logger.info(msg)
-
-        # return metrics["f1"]
+        precision, recall, f1  = self.evaluate(dev, batch_size)
+        self.logger.info("dev f1: %s", f1)
+        
         return np.mean(dev_losses)
+
+    def evaluate(self, dataset, batch_size=Config.batch_size):
+        """ Get metrics score on dataset
+
+        Use the python version of the conlleval evaluation script
+        """
+        labels = []
+        preds = []
+
+        for features, label_ids in self.features_generator.minibatches(dataset, batch_size):
+            pred_ids = self.predict_batch(features)
+            for tag_ids in pred_ids:
+                preds.extend([self.features_generator.idx_to_tag[idx] for idx in tag_ids])
+            for tag_ids in label_ids:
+                labels.extend([self.features_generator.idx_to_tag[idx] for idx in tag_ids])
+
+        precision, recall, f1 = conlleval.evaluate(true_seqs=labels, pred_seqs=preds, verbose=False)
+        return precision, recall, f1 
 
     def predict(self, words):
         """Returns list of tags
@@ -271,7 +289,7 @@ class CharCNNLSTMCRFModel(BaseModel):
 
         """
         features = self.features_generator.compute_features(words)
-        pred_ids, _ = self.predict_batch([features])
+        pred_ids = self.predict_batch([features])
         preds = [self.features_generator.idx_to_tag[idx]
                  for idx in list(pred_ids[0])]
 
