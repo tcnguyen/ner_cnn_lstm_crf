@@ -27,7 +27,6 @@ class BaseModel(object):
             lr: (tf.placeholder) tf.float32, learning rate
             loss: (tensor) tf.float32 loss to minimize
             clip: (python float) clipping of gradient. If < 0, no clipping
-
         """
         _lr_m = lr_method.lower()  # lower to make sure
 
@@ -58,44 +57,29 @@ class BaseModel(object):
         self.saver = tf.train.Saver()
 
     def restore_session(self, dir_model):
-        """Reload weights into session
-
-        Args:
-            sess: tf.Session()
-            dir_model: dir with weights
-
-        """
-        self.logger.info("Reloading the latest trained model...")
+        """Reload weights into session"""
+        self.logger.info("Loading the trained model from %s", dir_model)
         self.saver.restore(self.sess, dir_model)
 
     def save_session(self):
-        """Saves session = weights"""
         if not os.path.exists(Config.dir_model):
             os.makedirs(Config.dir_model)
         self.saver.save(self.sess, Config.dir_model)
 
     def close_session(self):
-        """Closes the session"""
         self.sess.close()
 
     def add_summary(self):
-        """Defines variables for Tensorboard
-
-        Args:
-            dir_output: (string) where the results are written
-
-        """
+        """Defines variables for Tensorboard"""
         self.merged = tf.summary.merge_all()
         self.file_writer = tf.summary.FileWriter(Config.dir_output,
                                                  self.sess.graph)
 
     def train(self, train, dev):
-        """Performs training with early stopping and lr exponential decay
+        """Does training with early stopping and lr exponential decay
 
         Args:
-            train: dataset that yields tuple of (sentences, tags)
-            dev: dataset
-
+            train, dev: dataset that yields tuple of (sentence, tags)
         """
         best_dev_loss = 100000000
         nepoch_no_imprv = 0  # for early stopping
@@ -108,7 +92,7 @@ class BaseModel(object):
             dev_loss = self.run_epoch(train, dev, epoch)
             Config.lr *= Config.lr_decay  # decay learning rate
 
-            # early stopping and saving best parameters
+            # early stopping
             if dev_loss < best_dev_loss:
                 nepoch_no_imprv = 0
                 self.save_session()
@@ -120,16 +104,3 @@ class BaseModel(object):
                     self.logger.info("- early stopping {} epochs without "
                                      "improvement".format(nepoch_no_imprv))
                     break
-
-    def evaluate(self, test):
-        """Evaluate model on test set
-
-        Args:
-            test: instance of class Dataset
-
-        """
-        self.logger.info("Testing model over test set")
-        metrics = self.run_evaluate(test)
-        msg = " - ".join(["{} {:04.2f}".format(k, v)
-                          for k, v in metrics.items()])
-        self.logger.info(msg)

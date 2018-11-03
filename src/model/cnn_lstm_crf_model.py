@@ -66,11 +66,10 @@ class CharCNNLSTMCRFModel(BaseModel):
         # build feed dictionary
         feed = {
             self.word_ids: word_ids,
-            self.sequence_lengths: sequence_lengths
+            self.sequence_lengths: sequence_lengths,
+            self.char_ids: char_ids,
+            self.word_lengths: word_lengths
         }
-
-        feed[self.char_ids] = char_ids
-        feed[self.word_lengths] = word_lengths
 
         if labels is not None:
             labels, _ = pad_sequences(labels, pad_tok=0)
@@ -85,11 +84,10 @@ class CharCNNLSTMCRFModel(BaseModel):
         return feed, sequence_lengths
 
     def add_word_embeddings_op(self):
-        """Defines self.word_embeddings
+        """Defines self.word_embeddings, which is the  the concatenation of:
+            - Pretrained word embeddings like glove, word2vec
+            - Output of characters convnet
 
-        Final word embeddings is the concatenation of:
-        - Pretrained word embeddings like glove, word2vec
-        - Output of characters convnet
         """
         with tf.variable_scope("words"):
             with np.load(Config.DATA_PATHS['word_embeddings']) as data:
@@ -132,19 +130,19 @@ class CharCNNLSTMCRFModel(BaseModel):
 
             self.char_output = tf.reshape(self.char_max,
                                           shape=[s[0], s[1], Config.conv_filters])
-            #word_lengths = tf.reshape(self.word_lengths, shape=[s[0]*s[1]])
 
             word_embeddings = tf.concat(
                 [word_embeddings, self.char_output], axis=-1)
 
         self.word_embeddings = tf.nn.dropout(word_embeddings, self.dropout)
-        #self.word_embeddings = word_embeddings
+
 
     def add_logits_op(self):
         """Defines self.logits
 
         For each word in each sentence of the batch, it corresponds to a vector
         of scores, of dimension equal to the number of tags.
+
         """
         with tf.variable_scope("bi-lstm"):
             cell_fw = tf.contrib.rnn.LSTMCell(Config.hidden_size_lstm)
@@ -180,25 +178,22 @@ class CharCNNLSTMCRFModel(BaseModel):
         tf.summary.scalar("loss", self.loss)
 
     def build(self):
-        # NER specific functions
         self.add_placeholders()
         self.add_word_embeddings_op()
         self.add_logits_op()
         self.add_loss_op()
 
-        # Generic functions that add training op and initialize session
-        self.add_train_op(Config.lr_method, self.lr, self.loss,
-                          Config.clip)
-        self.initialize_session()  # now self.sess is defined and vars are init
+        # add training op and initialize session
+        self.add_train_op(Config.lr_method, self.lr, self.loss, Config.clip)
+        self.initialize_session()
 
     def predict_batch(self, features):
         """
         Args:
-            features: list of char_ids and word_ids
+            features: sentences features
 
         Returns:
-            labels_pred: list of labels for each sentence
-            sequence_length
+            labels_pred: list of label ids
 
         """
         fd, sequence_lengths = self.get_feed_dict(features, dropout=1.0)
@@ -215,18 +210,18 @@ class CharCNNLSTMCRFModel(BaseModel):
                 logit, trans_params)
             viterbi_sequences += [viterbi_seq]
 
-        return viterbi_sequences, sequence_lengths
+        return viterbi_sequences
 
     def run_epoch(self, train, dev, epoch):
         """Performs one complete pass over the train set and evaluate on dev
 
         Args:
-            train: dataset that yields tuple of sentences, tags
-            dev: dataset
+            train, dev: dataset that yields tuple of sentences, tags
             epoch: (int) index of the current epoch
 
         Returns:
             loss on development set
+            
         """
         # progbar stuff for logging
         batch_size = Config.batch_size
@@ -269,7 +264,7 @@ class CharCNNLSTMCRFModel(BaseModel):
         """Returns list of tags
 
         Args:
-            words: list of words (string)
+            words: list of string
 
         Returns:
             preds: list of tags (string), one for each word in the sentence
