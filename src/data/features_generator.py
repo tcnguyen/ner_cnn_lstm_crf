@@ -1,4 +1,4 @@
-from src.data.utils import UNKNOWN_TOKEN
+from src.data.word_processing import UNKNOWN_TOKEN
 from src.config import Config
 
 class FeaturesGenerator():

@@ -1,8 +1,5 @@
 import numpy as np
 
-UNKNOWN_TOKEN = "_UNK_"
-PADDING_TOKEN = "_PAD_"
-
 def pad_sequences(sequences, pad_tok=0):
     """ pad a sequence to maximum length in sequence with pad_tok """
     sequence_lengths = [len(s) for s in sequences]

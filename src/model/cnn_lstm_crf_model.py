@@ -2,7 +2,7 @@ import numpy as np
 import os
 import tensorflow as tf
 
-from src.data.utils import pad_sequences, pad_characters
+from src.model.utils import pad_sequences, pad_characters
 from src.model.base_model import BaseModel
 from src.data.features_generator import FeaturesGenerator
 from src.config import Config

@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 from src.data.conlldataset import CoNLLDataset
-from src.data.utils import UNKNOWN_TOKEN, PADDING_TOKEN
+from src.data.word_processing import UNKNOWN_TOKEN, PADDING_TOKEN
 from src.config import Config
 
 
