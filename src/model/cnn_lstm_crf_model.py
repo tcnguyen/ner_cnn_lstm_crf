@@ -149,13 +149,18 @@ class CharCNNLSTMCRFModel(BaseModel):
 
         """
         with tf.variable_scope("bi-lstm"):
-            cell_fw = tf.contrib.rnn.LSTMCell(Config.hidden_size_lstm)
-            cell_bw = tf.contrib.rnn.LSTMCell(Config.hidden_size_lstm)
+            cell_fw = tf.nn.rnn_cell.LSTMCell(Config.hidden_size_lstm)
+            cell_fw = tf.nn.rnn_cell.DropoutWrapper(cell_fw, output_keep_prob=self.dropout)
+
+            cell_bw = tf.nn.rnn_cell.LSTMCell(Config.hidden_size_lstm)
+            cell_bw = tf.nn.rnn_cell.DropoutWrapper(cell_bw, output_keep_prob=self.dropout)
+
             (output_fw, output_bw), _ = tf.nn.bidirectional_dynamic_rnn(
                 cell_fw, cell_bw, self.word_embeddings,
                 sequence_length=self.sequence_lengths, dtype=tf.float32)
+
             output = tf.concat([output_fw, output_bw], axis=-1)
-            output = tf.nn.dropout(output, self.dropout)
+            #output = tf.nn.dropout(output, self.dropout)
 
         with tf.variable_scope("proj"):
             W = tf.get_variable("W", dtype=tf.float32,
