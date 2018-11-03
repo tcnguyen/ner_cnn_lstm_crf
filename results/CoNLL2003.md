@@ -7,7 +7,7 @@ Code v1.1
 ```
 dim_char = 50
 nepochs = 20
-dropout = 0.5
+dropout = 0.4
 batch_size = 16
 lr_method = "adam"
 lr = 0.001
@@ -23,17 +23,20 @@ hidden_size_lstm = 300
 
 ### Results:
 
-Early stopping happened with best dev loss = 0.55268866 (F1 = 94.09)
-
-
-F1 on test dataset is 90.08. Note that F1 on test dataset is much smaller than on dev (valid) set, which is the same thing as in the paper.
+Stop after epoch 17 (log.txt). Best dev loss = 0.50191736 (F1 = 94.61)
+F1 on test dataset is 90.56. Note that F1 on test dataset is much smaller than on dev (valid) set, which is the same thing as in the paper.
 
 ```
-processed 49888 tokens with 5648 phrases; found: 5689 phrases; correct: 5106.
-accuracy:  91.43%; (non-O)
-accuracy:  98.01%; precision:  89.75%; recall:  90.40%; FB1:  90.08
-              LOC: precision:  91.53%; recall:  93.29%; FB1:  92.40  1700
-             MISC: precision:  78.95%; recall:  79.63%; FB1:  79.29  708
-              ORG: precision:  87.01%; recall:  87.54%; FB1:  87.27  1671
-              PER: precision:  95.47%; recall:  95.05%; FB1:  95.26  1610
+processed 49888 tokens with 5648 phrases; found: 5681 phrases; correct: 5130.
+accuracy:  91.84%; (non-O)
+accuracy:  98.05%; precision:  90.30%; recall:  90.83%; FB1:  90.56
+              LOC: precision:  91.88%; recall:  92.99%; FB1:  92.43  1688
+             MISC: precision:  80.69%; recall:  80.34%; FB1:  80.51  699
+              ORG: precision:  86.67%; recall:  88.44%; FB1:  87.54  1695
+              PER: precision:  96.69%; recall:  95.61%; FB1:  96.14  1599
+
 ```
+
+### Remarks:
+
+I observed that dropout parameters is very important to reduce overfitting and obtain low loss on dev dataset.

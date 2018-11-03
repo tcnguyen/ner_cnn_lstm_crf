@@ -37,13 +37,13 @@ class Config:
     # training
     train_embeddings = False
     nepochs = 20
-    dropout = 0.5
+    dropout = 0.4
     batch_size = 16
     lr_method = "adam"
     lr = 0.001
     lr_decay = 0.9
     clip = -1  # if negative, no clipping
-    nepoch_no_imprv = 3
+    nepoch_no_imprv = 5
 
     # model hyperparameters
     conv_filter_size = 3
