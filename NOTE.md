@@ -12,7 +12,7 @@ This implementation imitates the implementation in the blog `https://guillaumege
     - pretrained word embeddings (glove)
     - output of the convnet on characters
     
-==> There is no (not yet) hand-made features on word levels or character levels as in the paper
+There is no hand-made features on word levels or character levels as in the paper since we expect that this can be learnt by the character level cnn.
 
 - Word input vectors (sentences) are feeded to a bi-LSTM model
 
@@ -66,3 +66,7 @@ The input data which will be feeded to our model will be:
    [71, 17, 82, 0, 0, 0],
    [62, 36, 79, 71, 13, 19]]],
 ```
+
+## Note on unknown words:
+
+Unknown words will not have word embeddings, but we should still allow character levels learning. This is a sensitive point which should be implemented correctly since it is easy to transform the unknown words to some unknown token and treat them the same.

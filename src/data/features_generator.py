@@ -29,22 +29,23 @@ class FeaturesGenerator():
         self.nchars = len(self.char_to_idx)
         self.ntags = len(self.tag_to_idx)
 
-    def get_ids(self, word):
+    def get_char_ids(self, word):
+        """get the array of character ids"""
+        return [self.char_to_idx[c] for c in word if c in self.char_to_idx]
+
+    def get_word_id(self, word):
+        """get the word id"""
         processed_word = Config.word_processing(word)
-
         if processed_word not in self.word_to_idx:
-            return ([0], self.word_to_idx[UNKNOWN_TOKEN])
+            return self.word_to_idx[UNKNOWN_TOKEN]
 
-        return ([self.char_to_idx[c] for c in word if c in self.char_to_idx], 
-            self.word_to_idx[processed_word])
+        return self.word_to_idx[processed_word]
 
     def compute_features(self, words):
         """
         return (list of [char_ids], list of word_id)
         """
-        x = [self.get_ids(w) for w in words]
-        x = zip(*x)
-        return x
+        return [self.get_char_ids(w) for w in words], [self.get_word_id(w) for w in words]
 
     def minibatches(self, dataset, batch_size):
         """ generator of (sentence, tags) tuples in IDX format
