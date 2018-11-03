@@ -1,0 +1,4 @@
+*.npz
+words.txt
+chars.txt
+tags.txt
