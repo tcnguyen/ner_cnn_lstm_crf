@@ -2,7 +2,7 @@ import numpy as np
 import os
 import tensorflow as tf
 
-from src.data.utils import pad_sequences
+from src.data.utils import pad_sequences, pad_characters
 from src.model.base_model import BaseModel
 from src.data.features_generator import FeaturesGenerator
 from src.config import Config
@@ -49,7 +49,7 @@ class CharCNNLSTMCRFModel(BaseModel):
         """Given some data, pad it and build a feed dictionary
 
         Args:
-            features: list of ([char ids], word_id) for each word in the sentence
+            features: each feature = (list of [char ids], list of word_id) for each word in the sentence
             labels: list of ids
             lr: (float) learning rate
             dropout: (float) keep prob
@@ -60,9 +60,8 @@ class CharCNNLSTMCRFModel(BaseModel):
         """
         # perform padding of the given data
         char_ids, word_ids = zip(*features)
-        word_ids, sequence_lengths = pad_sequences(word_ids, 0)
-        char_ids, word_lengths = pad_sequences(char_ids, pad_tok=0,
-                                               nlevels=2)
+        word_ids, sequence_lengths = pad_sequences(word_ids, pad_tok=0)
+        char_ids, word_lengths = pad_characters(char_ids, pad_tok=0)
 
         # build feed dictionary
         feed = {
@@ -74,7 +73,7 @@ class CharCNNLSTMCRFModel(BaseModel):
         feed[self.word_lengths] = word_lengths
 
         if labels is not None:
-            labels, _ = pad_sequences(labels, 0)
+            labels, _ = pad_sequences(labels, pad_tok=0)
             feed[self.labels] = labels
 
         if lr is not None:

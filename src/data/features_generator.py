@@ -29,8 +29,9 @@ class FeaturesGenerator():
         self.nchars = len(self.char_to_idx)
         self.ntags = len(self.tag_to_idx)
 
-    def word_to_idx_tube(self, word):
+    def get_ids(self, word):
         processed_word = Config.word_processing(word)
+
         if processed_word not in self.word_to_idx:
             return ([0], self.word_to_idx[UNKNOWN_TOKEN])
 
@@ -39,10 +40,9 @@ class FeaturesGenerator():
 
     def compute_features(self, words):
         """
-        return [char_ids], word_id
+        return (list of [char_ids], list of word_id)
         """
-        
-        x = [self.word_to_idx_tube(w) for w in words]
+        x = [self.get_ids(w) for w in words]
         x = zip(*x)
         return x
 
