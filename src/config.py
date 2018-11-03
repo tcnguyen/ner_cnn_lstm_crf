@@ -4,8 +4,9 @@ from src.data.word_processing import transform_word
 
 
 class Config:
-    # data folder
-    DATA_ROOT = './data/CoNLL2003/'
+    
+    
+    DATA_ROOT = './data/test/' # USE THIS './data/test/'   TO TEST THE CODE
     DATA_PATHS = {
         # original data
         'train': DATA_ROOT + 'train.txt',
@@ -23,19 +24,19 @@ class Config:
     EMBEDDING_SIZE = 300
 
     # general config
-    dir_output = "results/test/"
+    dir_output = "outputs/train/"
     dir_model = dir_output + "model.weights/"
 
     # embeddings
     dim_word = EMBEDDING_SIZE
-    dim_char = 25
+    dim_char = 50
 
     # word processing
     word_processing = transform_word
 
     # training
     train_embeddings = False
-    nepochs = 15
+    nepochs = 20
     dropout = 0.5
     batch_size = 16
     lr_method = "adam"
