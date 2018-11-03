@@ -35,3 +35,7 @@ python -m src.scripts.prediction
 # compute metrics on test predictions (using python version of conlleval script)
 python -m src.scripts.conlleval < test.preds.txt
 ```
+
+## Implementation note
+
+[Note](./NOTE.md)

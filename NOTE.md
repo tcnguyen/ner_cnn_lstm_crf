@@ -1,36 +1,34 @@
 # Implementation notes
 
-This implementation imitates the implementation in the blog `https://guillaumegenthial.github.io/sequence-tagging-with-tensorflow.html`.
+This implementation is inspired from the one described in the blog: `https://guillaumegenthial.github.io/sequence-tagging-with-tensorflow.html`.
 
-3 important files:
-- `src/config.py`: general, data, model parameters and training parameters configuration.
+**3 important files**:
+- `src/config.py`: all configurable parameters are put here.
 - `src/model/cnn_lstm_crf_model.py`: implementation of the model.
-- `src/data/features_generator`: generate features (i.e np.array) from text sentences and tags
+- `src/data/features_generator`: features generation from text sentences and tags.
 
 ## Model:
 - The final word vector is composed of:
     - pretrained word embeddings (glove)
     - output of the convnet on characters
     
-There is no hand-made features on word levels or character levels as in the paper since we expect that this can be learnt by the character level cnn.
+There is no hand-made features on word since we expect that they can be learnt by the character convnet.
 
-- Word input vectors (sentences) are feeded to a bi-LSTM model
+- Those word input vectors are feeded to a bi-LSTM model.
 
-- The 2 outputs of the bi-LSTM model is concatenated and feeded to a dense layer with n_tags output
+- The 2 outputs of the bi-LSTM model is concatenated and feeded to a dense layer with `ntags` outputs.
 
-- Finally we use a CRF layer to compute the crf log likelihood. (The paper uses sentence level log likelihood which is similar to a normalization factor)
+- Finally we use a è `CRF` layer to compute the crf log likelihood (which is the negative of the loss).
 
 ## Preprocessing
 
 - From the train, valid and test data, we generate the list of unique words, tags and characters. 
 
-- Each word will go to a word_processing step:
+- Each word will go to a processing step:
     - Lowercase
     - Number (integer or float) ⇒ '0'
     
-- The vocabulary will contain only words that has pretrained embedding + __PAD__ + __UNK__ tokens. The word embeddings for __PAD__ and __UNK__ tokens will be zeros.
-
-- Other words in the train, valid and test set that is not in the vocabulary will be transformed to __UNK__
+- The vocabulary will contain only those processed words which **have pretrained embedding** + __PAD__ + __UNK__ tokens. The word embeddings for __PAD__ and __UNK__ tokens will be zeros. During train time and test time, words that are not in the vocabulary (i.e no pretrained embedding available) will be transformed to __UNK__ (but we still keep the word characters to feed through the convnet since they are very useful even if the words are unknown).
 
 ## Features format:
 
@@ -69,4 +67,4 @@ The input data which will be feeded to our model will be:
 
 ## Note on unknown words:
 
-Unknown words will not have word embeddings, but we should still allow character levels learning. This is a sensitive point which should be implemented correctly since it is easy to transform the unknown words to some unknown token and treat them the same.
+Unknown words will not have word embeddings, but we should still allow character levels learning. This is an important point which should be implemented correctly.
