@@ -81,7 +81,7 @@ class BaseModel(object):
         Args:
             train, dev: dataset that yields tuple of (sentence, tags)
         """
-        best_dev_loss = 100000000
+        best_score = 0
         nepoch_no_imprv = 0  # for early stopping
         self.add_summary()  # tensorboard
 
@@ -89,15 +89,15 @@ class BaseModel(object):
             self.logger.info("Epoch {:} out of {:}".format(epoch + 1,
                                                            Config.nepochs))
 
-            dev_loss = self.run_epoch(train, dev, epoch)
+            score = self.run_epoch(train, dev, epoch)
             Config.lr *= Config.lr_decay  # decay learning rate
 
             # early stopping
-            if dev_loss < best_dev_loss:
+            if score > best_score:
                 nepoch_no_imprv = 0
                 self.save_session()
-                best_dev_loss = dev_loss
-                self.logger.info("- new best score!")
+                best_score = score
+                self.logger.info("- new best score. Saved model.")
             else:
                 nepoch_no_imprv += 1
                 if nepoch_no_imprv >= Config.nepoch_no_imprv:

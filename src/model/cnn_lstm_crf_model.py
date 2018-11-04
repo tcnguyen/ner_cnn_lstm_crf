@@ -262,10 +262,10 @@ class CharCNNLSTMCRFModel(BaseModel):
 
         self.logger.info("dev loss: %s", np.mean(dev_losses))
 
-        precision, recall, f1  = self.evaluate(dev, batch_size)
+        _, _, f1  = self.evaluate(dev, batch_size)
         self.logger.info("dev f1: %s", f1)
         
-        return np.mean(dev_losses)
+        return f1
 
     def evaluate(self, dataset, batch_size=Config.batch_size):
         """ Get metrics score on dataset
