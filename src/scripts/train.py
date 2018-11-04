@@ -6,8 +6,7 @@ from src.config import Config
 def main():
     model = CharCNNLSTMCRFModel()
     model.build()
-    # model.restore_session("results/crf/model.weights/") # optional, restore weights
-    # model.reinitialize_weights("proj")
+    #model.restore_session(Config.dir_model) # optional, restore weights
 
     # create datasets
     valid = CoNLLDataset(Config.DATA_PATHS['valid'])
