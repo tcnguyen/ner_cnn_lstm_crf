@@ -1,9 +1,11 @@
+import random
+
 from src.data.word_processing import UNKNOWN_TOKEN
 from src.config import Config
 
 class FeaturesGenerator():
     def __init__(self):
-        self.initilize()
+        self.initilize()        
 
     def build_dictionary(self, file_path, start=0):
         """ Create dictionary from file which contains a word per line
@@ -29,6 +31,7 @@ class FeaturesGenerator():
         self.nchars = len(self.char_to_idx)
         self.ntags = len(self.tag_to_idx)
 
+   
     def get_char_ids(self, word):
         """get the array of character ids"""
         return [self.char_to_idx[c] for c in word if c in self.char_to_idx]
@@ -54,20 +57,31 @@ class FeaturesGenerator():
         """
         return [self.get_char_ids(w) for w in words], [self.get_word_id(w) for w in words]
 
-    def minibatches(self, dataset, batch_size):
+    def minibatches(self, dataset, batch_size, shuffle=True):
         """ generator of (sentence, tags) tuples in IDX format
+
+        TO IMPROVE: use tensorflow dataset
         """
-        x_batch, y_batch = [], []
+
+        X = [] # load all data to shuffle
+        Y = [] # load all data to shuffle
+
         for words, tags in dataset:            
             x = self.compute_features(words)
             y = [self.tag_to_idx[tag] for tag in tags]
 
-            if len(x_batch) == batch_size:
-                yield x_batch, y_batch
-                x_batch, y_batch = [], []
+            X.append(x)
+            Y.append(y)
 
-            x_batch.append(x)
-            y_batch.append(y)
+        if shuffle:            
+            tmp = list(zip(X, Y))
+            random.shuffle(tmp)
+            X, Y = zip(*tmp)
 
-        if len(x_batch) != 0:
+
+        N = len(X)
+        
+        for i in range(0,N,batch_size):
+            x_batch, y_batch = X[i:i+batch_size], Y[i:i+batch_size]
             yield x_batch, y_batch
+            

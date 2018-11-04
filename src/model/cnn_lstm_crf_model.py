@@ -253,7 +253,7 @@ class CharCNNLSTMCRFModel(BaseModel):
 
         # loss over dev
         dev_losses = []
-        for i, (features, labels) in enumerate(self.features_generator.minibatches(dev, batch_size)):
+        for i, (features, labels) in enumerate(self.features_generator.minibatches(dev, batch_size, shuffle=False)):
             fd, _ = self.get_feed_dict(features, labels, dropout=1.0)
             dev_loss = self.sess.run(self.loss, feed_dict=fd)
             dev_losses.append(dev_loss)
