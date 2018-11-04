@@ -44,6 +44,13 @@ class FeaturesGenerator():
     def compute_features(self, words):
         """
         return (list of [char_ids], list of word_id)
+        
+        example: 
+        words = ["I", "love", "Paris"]
+        
+        
+          ------------------ char_ids ---------------   ------ word_id ------      
+        ( [[27], [5, 17, 56, 79], [35, 2, 36, 52, 15]], [14000, 18367, 19707])
         """
         return [self.get_char_ids(w) for w in words], [self.get_word_id(w) for w in words]
 

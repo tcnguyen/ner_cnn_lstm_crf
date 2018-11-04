@@ -15,31 +15,30 @@ Progbar = tf.keras.utils.Progbar
 
 
 class CharCNNLSTMCRFModel(BaseModel):
-    """Specialized class of Model for NER"""
 
     def __init__(self):
         super(CharCNNLSTMCRFModel, self).__init__()
         self.features_generator = FeaturesGenerator()
 
     def add_placeholders(self):
-        """Define placeholders = entries to computational graph"""
-        # shape = (batch size, max length of sentence in batch)
+        """Define placeholders"""
+        # shape = (batch_size, max_sentence_len)
         self.word_ids = tf.placeholder(tf.int32, shape=[None, None],
                                        name="word_ids")
 
-        # shape = (batch size)
+        # shape = (batch_size)
         self.sequence_lengths = tf.placeholder(tf.int32, shape=[None],
                                                name="sequence_lengths")
 
-        # shape = (batch size, max length of sentence, max length of word)
+        # shape = (batch_size, max_sentence_len, max_word_length)
         self.char_ids = tf.placeholder(tf.int32, shape=[None, None, None],
                                        name="char_ids")
 
-        # shape = (batch_size, max_length of sentence)
+        # shape = (batch_size, max_sentence_len)
         self.word_lengths = tf.placeholder(tf.int32, shape=[None, None],
                                            name="word_lengths")
 
-        # shape = (batch size, max length of sentence in batch)
+        # shape = (batch size, max_sentence_len)
         self.labels = tf.placeholder(tf.int32, shape=[None, None],
                                      name="labels")
 
@@ -53,8 +52,8 @@ class CharCNNLSTMCRFModel(BaseModel):
         """Given some data, pad it and build a feed dictionary
 
         Args:
-            features: each feature = (list of [char ids], list of word_id) for each word in the sentence
-            labels: list of ids
+            features: batch of sentence features
+            labels: list of label ids
             lr: (float) learning rate
             dropout: (float) keep prob
 
@@ -62,7 +61,7 @@ class CharCNNLSTMCRFModel(BaseModel):
             dict {placeholder: value}
 
         """
-        # perform padding of the given data
+        # perform 0 padding on features
         char_ids, word_ids = zip(*features)
         word_ids, sequence_lengths = pad_sequences(word_ids, pad_tok=0)
         char_ids, word_lengths = pad_characters(char_ids, pad_tok=0)
@@ -160,7 +159,6 @@ class CharCNNLSTMCRFModel(BaseModel):
                 sequence_length=self.sequence_lengths, dtype=tf.float32)
 
             output = tf.concat([output_fw, output_bw], axis=-1)
-            #output = tf.nn.dropout(output, self.dropout)
 
         with tf.variable_scope("proj"):
             W = tf.get_variable("W", dtype=tf.float32,
@@ -214,7 +212,7 @@ class CharCNNLSTMCRFModel(BaseModel):
         logits, trans_params = self.sess.run(
             [self.logits, self.trans_params], feed_dict=fd)
 
-        # iterate over the sentences because no batching in vitervi_decode
+        # iterate over the sentences for vitervi_decoding
         for logit, sequence_length in zip(logits, sequence_lengths):
             logit = logit[:sequence_length]  # keep only the valid steps
             viterbi_seq, viterbi_score = tf.contrib.crf.viterbi_decode(

@@ -27,6 +27,8 @@ There is no hand-made features on word since we expect that they can be learnt b
 
 ## Preprocessing
 
+`src/script/preprocessing.py`
+
 - From the train, valid and test data, we generate the list of unique words, tags and characters. 
 
 - Each word will go to a processing step:
@@ -37,8 +39,10 @@ There is no hand-made features on word since we expect that they can be learnt b
 
 ## Features format:
 
-X = char_ids, word_ids  
-y = tag_ids
+The class `src/script/features_generator.py` will generate features from text values.
+
+sentence => [[char_ids]], [word_ids] 
+tags = [tag_ids]
 
 
 Example of a batch of 2 sentences:
