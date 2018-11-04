@@ -20,6 +20,11 @@ There is no hand-made features on word since we expect that they can be learnt b
 
 - Finally we use a è `CRF` layer to compute the crf log likelihood (which is the negative of the loss).
 
+### Dropout:
+
+- We applied dropout on the outputs of the LTSM layers and after the word vectors (i.e glove embeddings + chars convnet = the input of the LSTM)
+- The paper mentioned that applying dropout on the input of the LSTM *seems* to have adverse effect (section 2.6.4) so we want to try both options.
+
 ## Preprocessing
 
 - From the train, valid and test data, we generate the list of unique words, tags and characters. 
