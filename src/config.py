@@ -36,8 +36,8 @@ class Config:
 
     # training
     train_embeddings = False
-    nepochs = 20
-    dropout = 0.4
+    nepochs = 30
+    dropout = 0.4 # keep probability
     batch_size = 16
     lr_method = "adam"
     lr = 0.001
@@ -48,6 +48,7 @@ class Config:
     # model hyperparameters
     conv_filter_size = 3
     conv_filters = 32
+    num_lstm_layers = 2
     hidden_size_lstm = 300  # lstm on word embeddings
 
 
