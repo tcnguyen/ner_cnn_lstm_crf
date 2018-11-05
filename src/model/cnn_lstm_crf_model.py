@@ -5,7 +5,7 @@ import tensorflow as tf
 from src.model.utils import pad_sequences, pad_characters
 from src.model.base_model import BaseModel
 
-from src.data.features_generator import FeaturesGenerator
+from src.dataset.features_generator import FeaturesGenerator
 
 from src.scripts import conlleval
 

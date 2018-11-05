@@ -6,7 +6,7 @@ import tensorflow_hub as hub
 from src.model.utils import pad_sequences, pad_characters
 from src.model.base_model import BaseModel
 
-from src.data.elmo_features_generator import ElmoFeaturesGenerator
+from src.dataset.elmo_features_generator import ElmoFeaturesGenerator
 
 from src.scripts import conlleval
 

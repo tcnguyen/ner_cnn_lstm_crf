@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-from src.data.conlldataset import CoNLLDataset
-from src.data.word_processing import UNKNOWN_TOKEN, PADDING_TOKEN
+from src.dataset.conlldataset import CoNLLDataset
+from src.dataset.word_processing import UNKNOWN_TOKEN, PADDING_TOKEN
 from src.config import Config
 
 

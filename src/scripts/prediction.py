@@ -1,4 +1,4 @@
-from src.data.conlldataset import CoNLLDataset
+from src.dataset.conlldataset import CoNLLDataset
 from src.model.cnn_lstm_crf_model import CharCNNLSTMCRFModel
 from src.model.cnn_lstm_crf_elmo_model import CharCNNLSTMCRFElmoModel
 from src.config import Config
