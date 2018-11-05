@@ -26,7 +26,7 @@ def get_all_words_and_tags():
 
 def get_all_characters():
     all_chars = set()
-    
+
     dataset = CoNLLDataset(Config.DATA_PATHS['train'])
     for words, _ in dataset:
         for word in words:
@@ -39,10 +39,11 @@ def get_vocabulary_and_word_embeddings(data_words, embedding_file_path):
     """
     Extract all the words in "data_words" that have word embedding
     """
-    df = pd.read_csv(embedding_file_path, sep=" ", quoting=3, header=None, index_col=0)
+    df = pd.read_csv(embedding_file_path, sep=" ",
+                     quoting=3, header=None, index_col=0)
     embedded_words = set(df.index)
     print("pretrained embeddings vocabulary size: ", len(embedded_words))
-    
+
     words = list(data_words & embedded_words)
     df = df.loc[words]
 
@@ -69,17 +70,19 @@ if __name__ == '__main__':
     print("get all words and tags from data")
     all_words, all_tags = get_all_words_and_tags()
     print("found {} words, {} tags".format(len(all_words), len(all_tags)))
+    write_list(all_tags, Config.DATA_PATHS['tags'])
 
     print("get all characters from training data")
     all_chars = get_all_characters()
     write_list(sorted(list(all_chars)), Config.DATA_PATHS['chars'])
 
-    print("build vocabulary and word embeddings")
-    vocabulary, word_embeddings = get_vocabulary_and_word_embeddings(
-        all_words, embedding_file_path=Config.EMBEDDING_PATH)
+    if Config.word_embeddings == 'glove':
+        print("build vocabulary and word embeddings")
+        vocabulary, word_embeddings = get_vocabulary_and_word_embeddings(
+            all_words, embedding_file_path=Config.EMBEDDING_PATH)
 
-    print("write vocabulary and word embeddings")
-    write_list(vocabulary, Config.DATA_PATHS['words'])
-    write_list(all_tags, Config.DATA_PATHS['tags'])
-    np.savez_compressed(Config.DATA_PATHS['word_embeddings'],
-                        embeddings=word_embeddings)
+        print("write vocabulary and word embeddings")
+        write_list(vocabulary, Config.DATA_PATHS['words'])
+
+        np.savez_compressed(Config.DATA_PATHS['word_embeddings'],
+                            embeddings=word_embeddings)

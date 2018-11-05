@@ -4,22 +4,24 @@ from src.data.word_processing import transform_word
 
 
 class Config:
-    
-    
-    DATA_ROOT = './data/CoNLL2003/' # USE THIS './data/test/'   TO TEST THE CODE
+
+    DATA_ROOT = './data/test/'  # USE THIS './data/test/'   TO TEST THE CODE
     DATA_PATHS = {
         # original data
         'train': DATA_ROOT + 'train.txt',
         'valid': DATA_ROOT + 'valid.txt',
         'test':  DATA_ROOT + 'test.txt',
 
-        # computed data 
+        # computed data
         'words': DATA_ROOT + 'words.txt',
         'tags':  DATA_ROOT + 'tags.txt',
         'chars': DATA_ROOT + 'chars.txt',
         'word_embeddings': DATA_ROOT + "word_embeddings.npz"
     }
 
+    word_embeddings = 'elmo'  # possible values: elmo, glove
+
+    # for pretrained word-embeddings like glove, not used for elmo
     EMBEDDING_PATH = '../../word_embeddings/glove.6B.300d.txt'
     EMBEDDING_SIZE = 300
 

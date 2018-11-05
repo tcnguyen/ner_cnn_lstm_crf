@@ -1,12 +1,17 @@
 from src.data.conlldataset import CoNLLDataset
 from src.model.cnn_lstm_crf_model import CharCNNLSTMCRFModel
+from src.model.cnn_lstm_crf_elmo_model import CharCNNLSTMCRFElmoModel
 from src.config import Config
 
 
 def main():
-    model = CharCNNLSTMCRFModel()
+    if Config.word_embeddings == 'glove':
+        model = CharCNNLSTMCRFModel()
+    elif Config.word_embeddings == 'elmo':
+        model = CharCNNLSTMCRFElmoModel()
+
     model.build()
-    #model.restore_session(Config.dir_model) # optional, restore weights
+    # model.restore_session(Config.dir_model) # optional, restore weights
 
     # create datasets
     valid = CoNLLDataset(Config.DATA_PATHS['valid'])

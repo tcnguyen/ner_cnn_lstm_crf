@@ -2,3 +2,5 @@ tensorflow >= 1.11
 pandas
 numpy
 seaborn
+tensorflow-hub
+jupyter
