@@ -53,3 +53,18 @@ and seems to underfit.
 
 - We tested removing the dropout on inputs of LSTM (ie the word embeddings + chars convnet outputs) using the same parameters, the model is overfitted and we got lower score on dev and test sets.
 
+
+## Elmo word embeddings
+We trained 4 weight parameters as described in the paper. The elmo embeddings are feeded to the input of the bi-LSMT, replacing the glove.
+
+Here what we got after 7 epochs (dev f1 95.0)
+
+```
+processed 49888 tokens with 5648 phrases; found: 5679 phrases; correct: 5184.
+accuracy:  92.78%; (non-O)
+accuracy:  98.31%; precision:  91.28%; recall:  91.78%; FB1:  91.53
+              LOC: precision:  92.55%; recall:  92.39%; FB1:  92.47  1665
+             MISC: precision:  81.24%; recall:  82.05%; FB1:  81.64  709
+              ORG: precision:  88.72%; recall:  89.95%; FB1:  89.33  1684
+              PER: precision:  97.04%; recall:  97.28%; FB1:  97.16  1621
+```
