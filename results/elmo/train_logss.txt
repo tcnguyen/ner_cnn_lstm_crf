@@ -1,0 +1,36 @@
+Initializing tf session
+Epoch 1 out of 20
+186/878 [=====>........................] - ETA: 57:15 - train loss: 3.57402018-11-05 23:20:09.097896: W tensorflow/core/framework/allocator.cc:113] Allocation of 325844992 exceeds 10% of system memory.
+878/878 [==============================] - 4203s 5s/step - train loss: 1.7487
+2018-11-06 00:22:54.912009: W tensorflow/core/framework/allocator.cc:113] Allocation of 314310656 exceeds 10% of system memory.
+2018-11-06 00:24:32.781577: W tensorflow/core/framework/allocator.cc:113] Allocation of 302776320 exceeds 10% of system memory.
+dev loss: 0.7488424
+2018-11-06 00:34:13.678701: W tensorflow/core/framework/allocator.cc:113] Allocation of 314310656 exceeds 10% of system memory.
+2018-11-06 00:38:04.649311: W tensorflow/core/framework/allocator.cc:113] Allocation of 302776320 exceeds 10% of system memory.
+dev f1: 91.60780356542213
+- new best score. Saved model.
+Epoch 2 out of 20
+878/878 [==============================] - 4134s 5s/step - train loss: 0.7822
+dev loss: 0.6255805
+dev f1: 92.79717931497649
+- new best score. Saved model.
+Epoch 3 out of 20
+878/878 [==============================] - 4150s 5s/step - train loss: 0.5745
+dev loss: 0.51874006
+dev f1: 94.61713419257012
+- new best score. Saved model.
+Epoch 4 out of 20
+878/878 [==============================] - 4132s 5s/step - train loss: 0.4647
+dev loss: 0.5112953
+dev f1: 94.08403361344538
+Epoch 5 out of 20
+878/878 [==============================] - 4139s 5s/step - train loss: 0.3747
+dev loss: 0.48127934
+dev f1: 95.04417332772402
+- new best score. Saved model.
+Epoch 6 out of 20
+878/878 [==============================] - 4152s 5s/step - train loss: 0.3263
+dev loss: 0.49308395
+dev f1: 95.00126443564024
+Epoch 7 out of 20
+494/878 [===============>..............] - ETA: 40:06 - train loss: 0.2860

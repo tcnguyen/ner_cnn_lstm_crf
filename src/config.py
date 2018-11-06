@@ -5,7 +5,7 @@ from src.dataset.word_processing import transform_word
 
 class Config:
 
-    DATA_ROOT = '/dataCoNLL2003/'  # USE THIS './data/test/'   TO TEST THE CODE
+    DATA_ROOT = './data/CoNLL2003/'  # USE THIS './data/test/'   TO TEST THE CODE
     DATA_PATHS = {
         # original data
         'train': DATA_ROOT + 'train.txt',

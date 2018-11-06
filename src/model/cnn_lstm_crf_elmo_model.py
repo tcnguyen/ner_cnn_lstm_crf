@@ -23,7 +23,7 @@ class CharCNNLSTMCRFElmoModel(BaseModel):
 
         print("elmo loading - the first time can take some time")
         self.elmo = hub.Module(
-            "https://tfhub.dev/google/elmo/2", trainable=False)
+            "https://tfhub.dev/google/elmo/2", trainable=True)
         print("elmo loaded")
 
     def add_placeholders(self):

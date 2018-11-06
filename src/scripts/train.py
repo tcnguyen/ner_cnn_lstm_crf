@@ -6,8 +6,7 @@ from src.config import Config
 import os
 
 
-def main():
-    os.environ['TFHUB_CACHE_DIR'] = "/dataTFHubCache"
+def main():    
 
     if Config.word_embeddings == 'glove':
         model = CharCNNLSTMCRFModel()
